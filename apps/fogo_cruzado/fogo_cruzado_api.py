@@ -96,17 +96,31 @@ class FogoCruzadoApi:
         data = response.json()
         return data['data']
     
-    def get_occurrences(self, state_id: str) -> list[dict]:
+    def get_occurrences(self, state_id: str, initial_date: str, final_date: str, page: int = 1) -> tuple[list[dict], bool, int]:
         if not self.is_authenticated():
             self.authenticate()
             
         headers = self.add_bearer_token_to_headers(self.api_base_headers, self.token)
-        response = requests.get(f"{self.api_base_url}/occurrences?idState={state_id}", headers=headers)
+        response = requests.get(f"{self.api_base_url}/occurrences?initialdate={initial_date}&finaldate={final_date}&idState={state_id}&order=ASC&page={page}&take=100", headers=headers)
         if response.status_code != 200:
             print(response.status_code)
             print(response.text)
-            return []
+            return [], False, False
         
         data = response.json()
-        return data['data']    
+        has_next_page = data["pageMeta"]["hasNextPage"]
+        page_count = data["pageMeta"]["pageCount"]
+        data = data["data"]
+        return data, has_next_page, page_count
+    
+    def get_all_occurrences(self, state_id: str, initial_date: str, final_date: str) -> list[dict]:
+        page = 1
+        occurrences = []
+        has_next_page = True
+        while has_next_page:
+            data, has_next_page = self.get_occurrences(state_id, initial_date, final_date, page)
+            occurrences += data
+            page += 1
+            
+        return occurrences      
     
