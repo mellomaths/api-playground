@@ -88,7 +88,6 @@ def get_occurrences_data(year: int, state_id: str):
         if len(data) == 0:
             return occurrences
         
-        print(len(data), has_next_page, page_count)
         occurrences += data
         page += 1
         progress += math.ceil(100 / page_count)
@@ -108,7 +107,6 @@ st.write(f"### {selected_year} Database for {selected_state}", occurrences_df)
 st.write("### How many occurrences per month?")
 
 df = occurrences_df.groupby(['month_number', 'month_name_abbr']).size().to_frame('occurrences')
-print("==========START==========")
 df = df.reset_index()
 df.sort_values(by='month_number', inplace=True)
 df = df.reset_index(drop=True)
