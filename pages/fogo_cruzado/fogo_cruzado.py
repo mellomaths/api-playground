@@ -1,13 +1,15 @@
 import os
 import math
+import altair as alt
 import streamlit as st
 import pandas as pd
 import time
 
 from apps.fogo_cruzado.fogo_cruzado_api import FogoCruzadoApi, Credentials
+from pages.fogo_cruzado.data import normalize_occurrences_data, build_occurrences_df
 
 
-st.set_page_config(page_title="Fogo Cruzado", page_icon="🔫")
+st.set_page_config(page_title="Fogo Cruzado", page_icon="🔫", layout="centered")
 
 st.write(f"# Fogo Cruzado")
 
@@ -74,6 +76,10 @@ def get_occurrences_data(year: int, state_id: str):
     progress = 0
     while has_next_page:
         data, has_next_page, page_count = fogo.get_occurrences(state_id, initial_date(year), final_date(year), page)
+        if len(data) == 0:
+            return occurrences
+        
+        print(len(data), has_next_page, page_count)
         occurrences += data
         page += 1
         progress += math.ceil(100 / page_count)
@@ -85,57 +91,20 @@ def get_occurrences_data(year: int, state_id: str):
     return occurrences
 
 occurrences = get_occurrences_data(selected_year, selected_state_id)
-    
-data = []
-for occur in occurrences:    
-    try:
-        locality = occur.get("locality", {})
-        if locality: 
-            locality = locality.get("name", None)
-        
-        neighborhood = occur.get("neighborhood", {})
-        if neighborhood:
-            neighborhood = neighborhood.get("name", None)
-            
-        sub_neighborhood = occur.get("subNeighborhood", {})
-        if sub_neighborhood:
-            sub_neighborhood = sub_neighborhood.get("name", None)
-            
-        context_info = occur.get("contextInfo", {})
-        if context_info:
-            reason = context_info.get("mainReason", {})
-            if reason:
-                reason = reason.get("name", None)
-            
-            massacre = context_info.get("massacre", False)
-    
-        data.append({
-            'id': occur.get("id", None),
-            "city": occur.get("city", {}).get("name", None),
-            "locality": locality,
-            "neighborhood": neighborhood,
-            "sub_neighborhood": sub_neighborhood,
-            "latitude": occur.get("latitude", None),
-            "longitude": occur.get("longitude", None),
-            "date": occur.get("date", None),
-            "reason": reason,
-            "massacre": massacre,
-            "police_presence": occur.get("policeAction", None),
-            "security_agent_presence": occur.get("agentPresence"),
-            "victims": occur.get("victims", [])
-        })
-    except TypeError as e:
-        print("Occurrence empty")
-        
-df = pd.DataFrame(data, columns=[
-    "id", 
-    "city", 
-    "locality", 
-    "neighborhood", 
-    "sub_neighborhood", 
-    "latitude", "longitude", 
-    "date", "reason", 
-    "massacre", "police_presence", "security_agent_presence", 
-    "victims"])
+occurrences_data = normalize_occurrences_data(occurrences)
+occurrences_df = build_occurrences_df(occurrences_data)
 
-st.write(f"### {selected_year} Database for {selected_state}", df)
+st.write(f"### {selected_year} Database for {selected_state}", occurrences_df)
+
+st.write("### How many occurrences per month?")
+
+df = occurrences_df.groupby(['month_number', 'month_name_abbr']).size().to_frame('occurrences')
+print("==========START==========")
+df = df.reset_index()
+df.sort_values(by='month_number', inplace=True)
+df = df.reset_index(drop=True)
+
+st.altair_chart(alt.Chart(df).mark_bar().encode(
+    x=alt.X('month_name_abbr', sort=None, title="Months", axis=alt.Axis(labelAngle=0)),
+    y=alt.Y('occurrences', title="Occurrences"),
+), use_container_width=True)

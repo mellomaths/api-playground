@@ -105,7 +105,7 @@ class FogoCruzadoApi:
         if response.status_code != 200:
             print(response.status_code)
             print(response.text)
-            return [], False, False
+            return [], False, 0
         
         data = response.json()
         has_next_page = data["pageMeta"]["hasNextPage"]
@@ -118,7 +118,7 @@ class FogoCruzadoApi:
         occurrences = []
         has_next_page = True
         while has_next_page:
-            data, has_next_page = self.get_occurrences(state_id, initial_date, final_date, page)
+            data, has_next_page, page_count = self.get_occurrences(state_id, initial_date, final_date, page)
             occurrences += data
             page += 1
             
