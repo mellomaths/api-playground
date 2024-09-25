@@ -15,7 +15,7 @@ st.write(f"# Fogo Cruzado")
 
 st.write(
 """
-The Instituto Fogo Cruzado has developed an innovative methodology for monitoring urban gunfire incidents and their impacts. With more than 20 unique indicators, the organization tracks armed violence in four different metropolitan regions in Brazil, such as Rio de Janeiro and Recife, with plans to expand to more cities. Through a mobile app, Fogo Cruzado receives and shares real-time information on gunfire incidents, contributing to Latin America's first open database on armed violence. This valuable resource is accessible to the public for free via the Fogo Cruzado API, providing crucial insights for research, policy-making, and public awareness.
+The Instituto [Fogo Cruzado](https://fogocruzado.org.br/) has developed an innovative methodology for monitoring urban gunfire incidents and their impacts. With more than 20 unique indicators, the organization tracks armed violence in four different metropolitan regions in Brazil, such as Rio de Janeiro and Recife, with plans to expand to more cities. Through a mobile app, Fogo Cruzado receives and shares real-time information on gunfire incidents, contributing to Latin America's first open database on armed violence. This valuable resource is accessible to the public for free via the Fogo Cruzado API, providing crucial insights for research, policy-making, and public awareness.
 
 This page leverages Fogo Cruzado database and API.
 """)
