@@ -6,7 +6,7 @@ import pandas as pd
 import time
 
 from apps.fogo_cruzado.fogo_cruzado_api import FogoCruzadoApi, Credentials
-from pages.fogo_cruzado.data import normalize_occurrences_data, build_occurrences_df
+from apps.fogo_cruzado.data import normalize_occurrences_data, build_occurrences_df
 
 
 st.set_page_config(page_title="Fogo Cruzado", page_icon="🔫", layout="centered")

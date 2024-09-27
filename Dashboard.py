@@ -5,13 +5,13 @@ load_dotenv()
 
 pages = {
     "Home": [
-        st.Page("pages/home/home.py", title="API Playground", icon="🏠"),
+        st.Page("apps/home/page.py", title="API Playground", icon="🏠"),
     ],
     "Fogo Cruzado API": [
-        st.Page("pages/fogo_cruzado/fogo_cruzado.py", title="Fogo Cruzado", icon="🔫"),
+        st.Page("apps/fogo_cruzado/page.py", title="Fogo Cruzado", icon="🔫"),
     ],
     "Yahoo Finance API": [
-        st.Page("pages/yahoo_finance/yahoo_finance.py", title="Yahoo Finance", icon="💸")
+        st.Page("apps/yahoo_finance/page.py", title="Yahoo Finance", icon="💸")
     ]
 }
 
