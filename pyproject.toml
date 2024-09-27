@@ -4,6 +4,9 @@ version = "0.1.0"
 description = "API Playground, Streamlit pages exploring APIs"
 authors = ["Matheus Mello de Lima <mellomatheuslima@gmail.com>"]
 readme = "README.md"
+packages = [
+    { include = "src" }
+]
 
 [tool.poetry.dependencies]
 python = "^3.12"
